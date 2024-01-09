@@ -8,7 +8,6 @@ Utility functions for gpuview.
 import argparse
 
 from gpustat import __version__ as __gpustat__
-from . import __version__
 
 
 class _HelpAction(argparse._HelpAction):
@@ -30,8 +29,8 @@ def arg_parser():
     subparsers = parser.add_subparsers(dest='action', help="Action")
     parser.add_argument('-v', '--version', action='version',
                         help='Print gpuview and gpustat versions',
-                        version='gpuview %s || gpustat %s' %
-                        (__version__, __gpustat__))
+                        version='gpuview || gpustat %s' %
+                        ( __gpustat__))
     parser.add_argument('-h', '--help', action=_HelpAction,
                         help='Print this help message')
 

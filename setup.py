@@ -1,6 +1,6 @@
 import setuptools
 
-from gpuview import __version__
+from gpuview_nk import __version__
 
 
 def read_readme():

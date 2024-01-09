@@ -11,10 +11,11 @@ import os
 import json
 from datetime import datetime
 
-from bottle import Bottle, TEMPLATE_PATH, template, response
+from bottle import Bottle, TEMPLATE_PATH, template, response, request, redirect
 
-from . import utils
-from . import core
+import utils
+import core
+
 
 
 app = Bottle()
@@ -52,6 +53,23 @@ def report_gpustat():
         resp = core.my_gpustat()
     return json.dumps(resp, default=_date_handler)
 
+@app.route('/apply_user')
+def apply_user():
+    user_name = request.query.user
+    hostname = request.query.hostname
+    endDate = request.query.endDate
+    core.add_users(user_name, hostname, endDate)
+    gpu_users = core.load_users()
+    return json.dumps({'gpu_users': gpu_users})
+
+@app.route('/remove_user')
+def remove_user():
+    user_name = request.query.user
+    hostname = request.query.hostname
+    print(user_name, hostname)
+    core.remove_user(user_name, hostname)
+    gpu_users = core.load_users()
+    return json.dumps({'gpu_users': gpu_users})
 
 def main():
     parser = utils.arg_parser()
