@@ -53,22 +53,20 @@ def report_gpustat():
         resp = core.my_gpustat()
     return json.dumps(resp, default=_date_handler)
 
-@app.route('/apply_user')
-def apply_user():
-    user_name = request.query.user
-    hostname = request.query.hostname
-    endDate = request.query.endDate
-    core.add_users(user_name, hostname, endDate)
-    gpu_users = core.load_users()
+@app.route('/apply_reservation', method='POST')
+def apply_reservation():
+    reservation_data = json.load(request.body)
+    print(reservation_data)
+    core.apply_reservation(reservation_data)
+    gpu_users = core.load_reservations()
     return json.dumps({'gpu_users': gpu_users})
 
-@app.route('/remove_user')
-def remove_user():
-    user_name = request.query.user
-    hostname = request.query.hostname
-    print(user_name, hostname)
-    core.remove_user(user_name, hostname)
-    gpu_users = core.load_users()
+@app.route('/remove_reservation', method='POST')
+def remove_reservation():
+    reservation_data = json.load(request.body)
+    print(reservation_data)
+    core.remove_reservation(reservation_data)
+    gpu_users = core.load_reservations()
     return json.dumps({'gpu_users': gpu_users})
 
 def main():

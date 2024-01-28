@@ -16,8 +16,8 @@ except ImportError:
 
 
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
-HOSTS_DB = os.path.join(ABS_PATH, 'gpuhosts.db')
-USERS_DB = os.path.join(ABS_PATH, 'gpuusers.db')
+HOSTS_DB = os.path.join(ABS_PATH, 'gpu_hosts.db')
+RESERVATION_DB = os.path.join(ABS_PATH, 'gpu_reservations.db')
 SAFE_ZONE = False  # Safe to report all details.
 
 
@@ -92,12 +92,10 @@ def all_gpustats():
     """
 
     gpustats = []
-    mystat = my_gpustat()
-    if 'gpus' in mystat:
-        gpustats.append(mystat)
 
     hosts = load_hosts()
-    users = load_users()
+    reservations = load_reservations()
+    
     for url in hosts:
         try:
             raw_resp = urlopen(url + '/gpustat')
@@ -115,8 +113,8 @@ def all_gpustats():
         sorted_gpustats = sorted(gpustats, key=lambda g: g['hostname'])
         result_sorted_gpustats = []
         for gpustats in sorted_gpustats:
-            if gpustats['hostname'] in  users:
-                gpustats['user_info']=users[gpustats['hostname']]
+            if gpustats['hostname'] in  reservations:
+                gpustats['user_info']=reservations[gpustats['hostname']]
             result_sorted_gpustats.append(gpustats)
             
         if result_sorted_gpustats is not None:
@@ -183,7 +181,7 @@ def print_hosts():
         for idx, host in enumerate(hosts):
             print('%02d. %s\t%s' % (idx+1, host[1], host[0]))
 
-def print_users():
+def print_reservations():
     hosts = load_hosts()
     if len(hosts):
         hosts = sorted(hosts.items(), key=lambda g: g[1])
@@ -206,58 +204,69 @@ def install_service(host=None, port=None,
     subprocess.call('{} "{}"'.format(script, arg.strip()), shell=True)
 
 
-def load_users():
-    users = {}
-    if not os.path.exists(USERS_DB):
+def load_reservations():
+    reservation_dict = {}
+    if not os.path.exists(RESERVATION_DB):
         print("There are no registered users! Use `users add` first.")
-        return users
+        return reservation_dict
 
-    for line in open(USERS_DB, 'r'):
+    for line in open(RESERVATION_DB, 'r'):
+        line = line.strip()
+        if not line:
+            continue  # 비어 있는 라인 건너뛰기
+
         try:
-            server, user_data = line.strip().split('\t')
-            user_dict = ast.literal_eval(user_data)
-            users[server] = user_dict
+            server, gpu_reservation = line.split('\t')
+            # 따옴표를 큰따옴표로 바꿉니다.
+            gpu_reservation = gpu_reservation.replace("'", '"')
+            gpu_reservation = json.loads(gpu_reservation)
+            reservation_dict[server] = gpu_reservation
         except Exception as e:
             print('Error: %s loading host: %s!' %
-                  (getattr(e, 'message', str(e)), line))
-    print(users) 
-    return users
+                (getattr(e, 'message', str(e)), line))
+    return reservation_dict
     
             
             
-def save_users(users):
-    with open(USERS_DB, 'w') as f:
-        for url in users:
-            f.write('%s\t%s\n' % (url, users[url]))
+def save_reservations(new_reservation_data):
+    with open(RESERVATION_DB, 'w') as f:
+        for server in new_reservation_data:
+            f.write('%s\t%s\n' % (server, new_reservation_data[server]))
 
-def add_users(user_name, hostname, endDate):
-    users = load_users()
-    if hostname in users:
-        # 사용자 이름과 날짜를 매핑하여 추가 또는 업데이트
-        users[hostname][user_name] = endDate
-    else:
-        # 새 서버에 대한 사용자와 날짜 매핑 생성
-        users[hostname] = {user_name: endDate}
-    save_users(users)
-    print('Successfully added user!')
-    return users
+def apply_reservation(new_reservation_data):
+    reservation = load_reservations()
+    print("이전예약", reservation)
+    print("새로운", new_reservation_data)
+    for server, reservations in new_reservation_data.items():
+        if server in reservation:
+            # 기존 서버의 예약 정보 업데이트
+            reservation[server].update(reservations)
+        else:
+            # 새로운 서버의 예약 정보 추가
+            reservation[server] = reservations
+
+    # 병합된 예약 정보 저장
+    save_reservations(reservation)
+    print('Successfully added reservation!')
+    return reservation
     
-def remove_user(user_name, hostname):
-    users = load_users()
-
-    if hostname in users and user_name in users[hostname]:
-        # 해당 사용자 제거
-        del users[hostname][user_name]
-        # 변경된 users 저장
-        save_users(users)
-        print("Removed user: %s from host: %s!" % (user_name, hostname))
-    else:
-        print("Couldn't find user: %s or host: %s!" % (user_name, hostname))
+def remove_reservation(remove_reservation_data):
+    reservation = load_reservations()
+    for server in remove_reservation_data:
+        for idx in remove_reservation_data[server]:
+            if server in reservation and idx in reservation[server]:
+                del reservation[server][idx]
+                print("Removed reservation server: %s from gpu: %s!" % (server, idx))
+            else:
+                print("Couldn't find server: %s from gpu: %s!" % (server, idx))
+            
+    save_reservations(reservation)
+    
 
 
         
-def print_users():
-    users = load_users()
+def print_reservations():
+    users = load_reservations()
     if len(users):
         users = sorted(users.items(), key=lambda g: g[1])
         print('#   Name\tURL')
