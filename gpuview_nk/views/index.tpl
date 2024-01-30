@@ -85,18 +85,17 @@
                                 </div>
                                 
                                 <!-- User list with horizontal layout -->
-                                
+                                <div id="userList-{{ gpustat.get('hostname', '-') }}-{{gpu.get('index', '')}}" style="display: flex; color: white;">
                                     <!-- Dynamically filled with users -->
                                     % user_info = gpustat.get('user_info', {})
                                     % if user_info:
                                         % for gpu_idx, data in user_info.items():
-                                            % if str(gpu_idx) == str(gpu.get('index', '')):
-                                                <div id="userList-{{ gpustat.get('hostname', '-') }}-str(gpu_idx)" style="display: flex; color: white;">
+                                            % if str(gpu_idx) == str(gpu.get('index', '')) and data.get('userName'):
                                                     {{data.get('userName', '')}}, {{data.get('endDate', '')}}, {{data.get('reason', '')}}
-                                                </div>
                                             % end
                                         % end
                                     % end
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer text-white clearfix small z-1">
@@ -196,6 +195,10 @@
                     alert("종료 날짜를 선택해주세요.");
                     return;
                 }
+                if (reason === "사유") {
+                    alert("사유를 작성해주세요.");
+                    return;
+                }
 
                 var selectedGpus = {};
                 // 모든 체크박스 요소를 가져옴
@@ -247,18 +250,17 @@
             }
             function updateUserInfo(gpuUsers) {
                 for (var hostname in gpuUsers) {
-                    console.log('hostname',hostname);
                     var gpuDict = gpuUsers[hostname];
-                    console.log('gpuDict', gpuDict);
                     for (gpu in gpuDict){
-                        console.log('gpu', gpu);
-                        var userListElement = document.getElementById('userList-' + hostname + '-' + gpu);
-
                         // gpuDict[gpuNum] 객체가 존재하고, 'user' 키에 값이 있는 경우에만 userListHtml 설정
-                        if (gpuDict[hostname] && gpuDict[hostname][gpu]) {
-                            var userListHtml = '<span>' + gpuDict[hostname][gpu]['userName'] + ', ' + gpuDict[hostname][gpu]['endDate'] + ', ' + gpuDict[hostname][gpu]['reason'] + '</span>';
-                            userListElement.innerHTML = userListHtml;
+                        var userListElement = document.getElementById('userList-' + hostname + '-' + gpu);
+                        var userListHtml = ""
+                        console.log(gpuDict[gpu]);
+                        if (gpuDict[gpu] && gpuDict[gpu]['userName'] ) {
+                            var userListHtml = '<span>' + gpuDict[gpu]['userName'] + ', ' + gpuDict[gpu]['endDate'] + ', ' + gpuDict[gpu]['reason'] + '</span>';
                         } 
+                        userListElement.innerHTML = userListHtml;
+
                     }
                 }
             }

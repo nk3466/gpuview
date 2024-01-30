@@ -255,7 +255,7 @@ def remove_reservation(remove_reservation_data):
     for server in remove_reservation_data:
         for idx in remove_reservation_data[server]:
             if server in reservation and idx in reservation[server]:
-                del reservation[server][idx]
+                reservation[server][idx] = {}
                 print("Removed reservation server: %s from gpu: %s!" % (server, idx))
             else:
                 print("Couldn't find server: %s from gpu: %s!" % (server, idx))
