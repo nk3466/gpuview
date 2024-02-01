@@ -65,11 +65,10 @@ def check_commute(id, pw, go_type):
         # 출근
         if go_type == 1: 
             try:
-                driver.switch_to().alert()
                 driver.find_element(By.ID, 'btnConfirm').click()
                 return "출근 완료! 오늘도 화이팅!! 👊🏻"
             except:
-                return "미안.. 출근 버튼 안눌리넹! 뛰어!! 🏃🏻‍♀️"
+                return "악...! 출근 버튼 안눌리넹! 뛰어!! 🏃🏻‍♀️"
         
         # 퇴근
         elif go_type == 2:
@@ -77,7 +76,6 @@ def check_commute(id, pw, go_type):
                 driver.find_element(By.CSS_SELECTOR, "li[rel='tab2']").click()
                 driver.find_element(By.ID, 'outBtn').click()
                 
-                driver.switch_to().alert()
                 driver.find_element(By.ID, 'btnConfirm').click()
                 
                 return "퇴근 완료! 오늘두 고생했어!! 🤸🏻‍♀️"
@@ -88,3 +86,4 @@ def check_commute(id, pw, go_type):
 
         driver.quit()
         print('quit driver')
+# print(check_commute(2310039, 'skarud@1028', 2))

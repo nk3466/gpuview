@@ -18,7 +18,7 @@
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
         <a class="navbar-brand" href="/"><h2>[GPU Dashboard]</h2></a>
-        <div style="text-align: right; border-radius: 10px; background-color: #f0f0f0; padding: 10px; width: 570px">
+        <div style="text-align: right; border-radius: 10px; background-color: #f0f0f0; padding: 10px; width: 580px">
             <!-- Dropdown and Use button -->
             <select id="userDropdown" class="userDropdown" style="width: 70px; height: 30px; margin-right: 5px; font-size: 16px;">
                 <option value="사용자">사용자</option>
@@ -85,7 +85,7 @@
                                 </div>
                                 
                                 <!-- User list with horizontal layout -->
-                                <div id="userList-{{ gpustat.get('hostname', '-') }}-{{gpu.get('index', '')}}" style="display: flex; color: white;">
+                                <div id="userList-{{ gpustat.get('hostname', '-') }}-{{gpu.get('index', '')}}" style="display: flex; color: black; padding-top: 10px;">
                                     <!-- Dynamically filled with users -->
                                     % user_info = gpustat.get('user_info', {})
                                     % if user_info:
@@ -165,7 +165,7 @@
             <footer class="sticky-footer">
                 <div class="container">
                     <div class="text-center text-white">
-                        <small><a href='https://github.com/fgaim/gpuview'>gpuview</a> © 2018</small>
+                        <small><a href='https://github.com/fgaim/gpuview'>gpuview</a> HANDMADE NK</small>
                     </div>
                 </div>
             </footer>
@@ -185,7 +185,6 @@
                 var user = document.getElementById('userDropdown').value;
                 var endDate = document.getElementById('endDate').value;
                 var reason = document.getElementById('reason').value;
-                console.log(user, endDate, reason);
 
                 // 데이터 검증
                 if (user === "사용자") {
@@ -232,7 +231,6 @@
                     return; // 사용자가 취소를 눌렀을 경우 함수 실행 중지
                 }
                 
-                console.log(selectedGpus);
                 // URL 인코딩된 쿼리 문자열 생성
                 var xhttp = new XMLHttpRequest();
                 var selectedGpusJson = JSON.stringify(selectedGpus);
@@ -243,7 +241,6 @@
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         var response = JSON.parse(this.responseText);
-                        console.log("결과", response.gpu_users);
                         updateUserInfo(response.gpu_users);
 
                         var userDropdown = document.getElementById('userDropdown');
@@ -264,7 +261,6 @@
                         // gpuDict[gpuNum] 객체가 존재하고, 'user' 키에 값이 있는 경우에만 userListHtml 설정
                         var userListElement = document.getElementById('userList-' + hostname + '-' + gpu);
                         var userListHtml = ""
-                        console.log(gpuDict[gpu]);
                         if (gpuDict[gpu] && gpuDict[gpu]['userName'] ) {
                             var userListHtml = '<span>' + gpuDict[gpu]['userName'] + ', ' + gpuDict[gpu]['endDate'] + ', ' + gpuDict[gpu]['reason'] + '</span>';
                         } 
@@ -322,7 +318,6 @@
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         var response = JSON.parse(this.responseText);
-                        console.log(response.gpu_users);
                         updateUserInfo(response.gpu_users);
 
                         // 요청 성공 후 입력 값 초기화

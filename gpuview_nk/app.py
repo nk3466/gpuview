@@ -10,7 +10,7 @@ Web API of gpuview.
 import os
 import json
 from datetime import datetime
-
+import pytz  
 from bottle import Bottle, TEMPLATE_PATH, template, response, request, redirect
 
 import utils
@@ -71,17 +71,33 @@ def remove_reservation():
 
 @app.route('/go_to_work', method='POST')
 def go_to_work():
+    
+    utc_time = datetime.utcnow().replace(tzinfo=pytz.utc)
+    kst_time = utc_time.astimezone(pytz.timezone('Asia/Seoul'))
+    
     commute_data = json.load(request.body)
     print(commute_data)
-    result = commute.check_commute(commute_data['id'], commute_data['pw'], 1)
+    if kst_time.weekday() in range(0, 5) and kst_time.hour == 8 and kst_time.minute < 30: 
+        result = commute.check_commute(commute_data['id'], commute_data['pw'], 1)
+    else:
+        result = "출근시간이 아니에용!"
+        
     response.content_type = 'application/json'
     return json.dumps(result, ensure_ascii=False)
 
 @app.route('/leave_work', method='POST')
 def leave_work():
+    
+    utc_time = datetime.utcnow().replace(tzinfo=pytz.utc)
+    kst_time = utc_time.astimezone(pytz.timezone('Asia/Seoul'))
+    
     commute_data = json.load(request.body)
     print(commute_data)
-    result = commute.check_commute(commute_data['id'], commute_data['pw'], 2)
+    if kst_time.weekday() in range(0, 5) and 15 <= kst_time.hour < 18:
+        result = commute.check_commute(commute_data['id'], commute_data['pw'], 2)
+    else:
+        result = "퇴근시간이 아니에용!"
+    
     response.content_type = 'application/json'
     return json.dumps(result, ensure_ascii=False)
 
