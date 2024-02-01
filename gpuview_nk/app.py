@@ -14,7 +14,7 @@ from datetime import datetime
 from bottle import Bottle, TEMPLATE_PATH, template, response, request, redirect
 
 import utils
-import core
+import core, commute
 
 
 
@@ -68,6 +68,22 @@ def remove_reservation():
     core.remove_reservation(reservation_data)
     gpu_users = core.load_reservations()
     return json.dumps({'gpu_users': gpu_users})
+
+@app.route('/go_to_work', method='POST')
+def go_to_work():
+    commute_data = json.load(request.body)
+    print(commute_data)
+    result = commute.check_commute(commute_data['id'], commute_data['pw'], 1)
+    response.content_type = 'application/json'
+    return json.dumps(result, ensure_ascii=False)
+
+@app.route('/leave_work', method='POST')
+def leave_work():
+    commute_data = json.load(request.body)
+    print(commute_data)
+    result = commute.check_commute(commute_data['id'], commute_data['pw'], 2)
+    response.content_type = 'application/json'
+    return json.dumps(result, ensure_ascii=False)
 
 def main():
     parser = utils.arg_parser()

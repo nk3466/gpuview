@@ -181,6 +181,7 @@
             });
 
             function applyUser() {
+
                 var user = document.getElementById('userDropdown').value;
                 var endDate = document.getElementById('endDate').value;
                 var reason = document.getElementById('reason').value;
@@ -244,6 +245,14 @@
                         var response = JSON.parse(this.responseText);
                         console.log("결과", response.gpu_users);
                         updateUserInfo(response.gpu_users);
+
+                        var userDropdown = document.getElementById('userDropdown');
+                        var endDateInput = document.getElementById('endDate');
+                        var reasonInput = document.getElementById('reason');
+                        // 요청 성공 후 입력 값 초기화
+                        userDropdown.selectedIndex = 0; // 드롭다운을 첫 번째 옵션으로 설정
+                        endDateInput.value = '';        // 날짜 입력란 초기화
+                        reasonInput.value = '사유';         // 사유 입력란 초기화
                     }
                 };
 
@@ -315,6 +324,16 @@
                         var response = JSON.parse(this.responseText);
                         console.log(response.gpu_users);
                         updateUserInfo(response.gpu_users);
+
+                        // 요청 성공 후 입력 값 초기화
+                        var userDropdown = document.getElementById('userDropdown');
+                        var endDateInput = document.getElementById('endDate');
+                        var reasonInput = document.getElementById('reason');
+
+                        // 요청 성공 후 입력 값 초기화
+                        userDropdown.selectedIndex = 0; // 드롭다운을 첫 번째 옵션으로 설정
+                        endDateInput.value = '';        // 날짜 입력란 초기화
+                        reasonInput.value = '사유';         // 사유 입력란 초기화
                     }
                 };
                 

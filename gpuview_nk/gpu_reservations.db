@@ -1,5 +1,5 @@
-gpu92	{'1': {}, '2': {}}
-gpu91	{'2': {'userName': '김수현', 'endDate': '2024-12-31', 'reason': 'ipark people count'}, '3': {'userName': '김수현', 'endDate': '2024-12-31', 'reason': 'ipark people count'}}
-gpu94	{'3': {'userName': '김수현', 'endDate': '2024-12-31', 'reason': '부동산 114'}}
-gpu93	{'1': {}, '2': {}}
+gpu92	{'1': {'userName': '이남경', 'endDate': '2024-02-02', 'reason': 'whisper cer 체크'}, '2': {'userName': '이남경', 'endDate': '2024-02-02', 'reason': 'whisper cer 체크'}, '0': {'userName': '이남경', 'endDate': '2024-02-02', 'reason': 'whisper cer 체크'}, '3': {'userName': '이남경', 'endDate': '2024-02-02', 'reason': 'whisper cer 체크'}}
+gpu91	{'2': {'userName': '김수현', 'endDate': '2024-12-31', 'reason': 'ipark people count'}, '3': {'userName': '김수현', 'endDate': '2024-12-31', 'reason': 'ipark people count'}, '0': {}, '1': {}}
+gpu94	{'3': {'userName': '김수현', 'endDate': '2024-12-31', 'reason': '부동산 114'}, '0': {'userName': '민소연', 'endDate': '2024-02-02', 'reason': 'TTS 모델링'}}
+gpu93	{'1': {}, '2': {}, '3': {}}
 gpu95	{'2': {}, '6': {}}

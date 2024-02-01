@@ -8,7 +8,7 @@ Core functions of gpuview.
 import ast
 import os
 import json
-import subprocess
+import subprocess, time
 try:
     from urllib.request import urlopen
 except ImportError:
@@ -98,8 +98,11 @@ def all_gpustats():
     
     for url in hosts:
         try:
+            start_ms = int(round(time.time() * 1000))
             raw_resp = urlopen(url + '/gpustat')
             gpustat = json.loads(raw_resp.read())
+            end_ms = int(round(time.time() * 1000))
+            print(url, "second : ", end_ms - start_ms)
             raw_resp.close()
             if not gpustat or 'gpus' not in gpustat:
                 continue
