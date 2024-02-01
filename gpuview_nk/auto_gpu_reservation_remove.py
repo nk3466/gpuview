@@ -15,8 +15,9 @@ for server in remove_reservation_data:
                 user_names.append(remove_reservation_data[server][idx].get('userName'))
                 remove_reservation_data[server][idx] = {}
                 
-save_reservations(remove_reservation_data)
+if len(user_names) > 0:
+    save_reservations(remove_reservation_data)
 
-result = ','.join(user_names)
-print(today, result + "서버 예약 삭제 완료")
+    result = ','.join(user_names)
+    print(today, result + "서버 예약 삭제 완료")
 
