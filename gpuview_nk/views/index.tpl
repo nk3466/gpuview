@@ -255,6 +255,17 @@
 
             }
             function updateUserInfo(gpuUsers) {
+
+                // 모든 'gpu-checkbox-'로 시작하는 체크박스 선택
+                        var checkboxes = document.querySelectorAll('[id^="gpu-checkbox-"]');
+
+                // 선택된 모든 체크박스를 순회하면서 체크 해제 및 배경색 업데이트
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = false; // 체크박스 체크 해제
+                    checkbox.style.backgroundColor = '#eee'; // 배경색을 초기 상태로 업데이트
+                });
+
+
                 for (var hostname in gpuUsers) {
                     var gpuDict = gpuUsers[hostname];
                     for (gpu in gpuDict){

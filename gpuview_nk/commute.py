@@ -20,10 +20,11 @@ chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument("--single-process")
 chrome_options.add_argument("--disable-dev-shm-usage")
 # Get driver and open url
-driver = webdriver.Chrome(options=chrome_options)
+
 
 def check_commute(id, pw, go_type):
     try:
+        driver = webdriver.Chrome(options=chrome_options)
         # 로그인 URL 설정 및 접속
         login_url = "https://gw.hdc-labs.co.kr/gw/uat/uia/egovLoginUsr.do"
         driver.get(login_url)

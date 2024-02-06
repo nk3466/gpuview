@@ -38,7 +38,19 @@ today = datetime.date.today().strftime('%Y-%m-%d')
 
 # endDate가 오늘 날짜와 같은 userName 찾기
 user_names = []
+week_names = []
 
+weekday = today.weekday()  # 월요일은 0, 일요일은 6
+
+# 지난 주말 날짜 계산 (오늘이 월요일인 경우에만)
+if weekday == 0:
+    last_sunday = today - datetime.timedelta(days=1)  # 어제 (일요일)
+    last_saturday = today - datetime.timedelta(days=2)  # 그제 (토요일)
+    weekend_dates = {last_sunday.strftime('%Y-%m-%d'), last_saturday.strftime('%Y-%m-%d')}
+else:
+    weekend_dates = set()
+    
+    
 for gpu in reservation_json.values():
     for info in gpu.values():
         if info and info.get('endDate') == today:

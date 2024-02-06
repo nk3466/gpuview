@@ -77,7 +77,7 @@ def go_to_work():
     
     commute_data = json.load(request.body)
     print(commute_data)
-    if kst_time.weekday() in range(0, 5) and kst_time.hour == 8 and kst_time.minute < 30: 
+    if kst_time.weekday() in range(0, 5) and (kst_time.hour < 8 or (kst_time.hour == 8 and kst_time.minute < 30)):
         result = commute.check_commute(commute_data['id'], commute_data['pw'], 1)
     else:
         result = "출근시간이 아니에용!"
