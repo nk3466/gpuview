@@ -14,7 +14,6 @@ try:
 except ImportError:
     from urllib2 import urlopen
 
-
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 HOSTS_DB = os.path.join(ABS_PATH, 'gpu_hosts.db')
 RESERVATION_DB = os.path.join(ABS_PATH, 'gpu_reservations.db')
@@ -84,34 +83,15 @@ def my_gpustat():
 
 
 def all_gpustats():
-    """
-    Aggregates the gpustats of all registered hosts and this host.
-
-    Returns:
-        list: pustats of hosts
-    """
-
     gpustats = []
-
     hosts = load_hosts()
     reservations = load_reservations()
+    try:
+        with open('gpustats.json', 'r') as f:
+            gpustats = json.load(f)
+    except FileNotFoundError:
+        print("File not found. Returning empty list.")
     
-    for url in hosts:
-        try:
-            start_ms = int(round(time.time() * 1000))
-            raw_resp = urlopen(url + '/gpustat')
-            gpustat = json.loads(raw_resp.read())
-            end_ms = int(round(time.time() * 1000))
-            print(url, "second : ", end_ms - start_ms)
-            raw_resp.close()
-            if not gpustat or 'gpus' not in gpustat:
-                continue
-            if hosts[url] != url:
-                gpustat['hostname'] = hosts[url]
-            gpustats.append(gpustat)
-        except Exception as e:
-            print('Error: %s getting gpustat from %s' %
-                  (getattr(e, 'message', str(e)), url))
     try:
         sorted_gpustats = sorted(gpustats, key=lambda g: g['hostname'])
         result_sorted_gpustats = []
@@ -127,14 +107,9 @@ def all_gpustats():
         print("Error: %s" % getattr(e, 'message', str(e)))
     return gpustats
 
-
+    
 def load_hosts():
-    """
-    Loads the list of registered gpu nodes from file.
 
-    Returns:
-        dict: {url: name, ... }
-    """
     hosts = {}
     if not os.path.exists(HOSTS_DB):
         print("There are no registered hosts! Use `gpuview add` first.")
@@ -164,8 +139,6 @@ def add_host(url, name=None):
     hosts[url] = name
     save_hosts(hosts)
     print('Successfully added host!')
-
-
 
 def remove_host(url):
     hosts = load_hosts()

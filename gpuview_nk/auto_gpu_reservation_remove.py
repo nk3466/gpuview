@@ -1,12 +1,14 @@
-import requests, json, os, datetime
+import requests, json, os, pytz
 from core import load_reservations, save_reservations
+from datetime import datetime
 
 ABS_PATH = os.path.dirname(os.path.realpath(__file__))
 RESERVATION_DB = os.path.join(ABS_PATH, 'gpu_reservations.db')
 remove_reservation_data = load_reservations()
 
-today = datetime.date.today().strftime('%Y-%m-%d')
-
+utc_now = datetime.utcnow()
+kst = pytz.timezone('Asia/Seoul')
+today = datetime.now(kst).date()
 user_names = []
 
 for server in remove_reservation_data:
