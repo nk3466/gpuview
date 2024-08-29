@@ -29,6 +29,7 @@
                 <option value="김수현">김수현</option>
                 <option value="민소연">민소연</option>
                 <option value="이남경">이남경</option>
+                <option value="부동산114">부동산114</option>
             </select> 
             <!-- Date range selection -->
             <input type="date" id="endDate" class="endDate" style="margin-right: 5px;">
